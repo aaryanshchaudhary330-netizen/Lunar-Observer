@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>OHRC Mission Control Pipeline</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;500;700&family=Inter:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Core Hackathon Libraries -->
+    <script src="https://unpkg.com/three@0.128.0/build/three.min.js"></script>
+    <script src="https://unpkg.com/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+    <script src="https://unpkg.com/globe.gl@2.32.2/dist/globe.gl.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div id="galaxy-bg" class="background-layer"></div>
+    <div id="moon-bg" class="background-layer"></div>
+    <div id="dark-overlay" class="background-layer"></div>
+    <canvas id="starfield"></canvas>
+    <div id="flashlight"></div>
+    <div id="cursor-glow"></div>
+    
+    <nav class="sticky-nav">
+        <div class="logo">ISRO // OHRC PROCESSING</div>
+        <ul id="nav-links">
+            <li><a href="#hero" class="active">Terminal</a></li>
+            <li><a href="#pipeline">Pipeline</a></li>
+            <li><a href="#bottlenecks">Bottlenecks</a></li>
+            <li><a href="#validation">Validation</a></li>
+            <li><a href="#stack">Tech Stack</a></li>
+            <li><a href="#demo">Demo</a></li>
+        </ul>
+    </nav>
+
+    <main class="mission-control">
+        
+        <section id="hero" class="panel hero">
+            <div class="terminal-header">
+                <span>SYSTEM INIT</span>
+                <span>STATUS: ONLINE</span>
+            </div>
+            <div class="panel-content">
+                <h1 class="glitch-text">OHRC DATA PROCESSING<br><span class="highlight">PIPELINE v3.0</span></h1>
+                <div class="specs">
+                    <p><strong>INSTRUMENT:</strong> Chandrayaan-2 OHRC (Panchromatic)</p>
+                    <p><strong>RESOLUTION:</strong> 0.25m nadir GSD</p>
+                    <p><strong>SPECTRAL RANGE:</strong> 0.45 – 0.70 μm</p>
+                    <p><strong>TARGET:</strong> Lunar Permanently Shadowed Regions (PSRs)</p>
+                </div>
+                <p class="mission-statement">Recovering high-fidelity surface reflectance in ultra-low light conditions using physics-informed computational photography. <span class="warning-text">NOTE: Image enhancement improves visibility but does not synthesize new physical information. Strict validation is enforced.</span></p>
+            </div>
+        </section>
+
+        <section id="pipeline" class="panel pipeline">
+            <div class="terminal-header">
+                <span>MODULE // PIPELINE</span>
+                <span>DATA FLOW</span>
+            </div>
+            <div class="panel-content">
+                <h2>Physics-Informed Architecture</h2>
+                
+                <div class="architecture-diagram">
+                    <div class="arch-node">
+                        <div class="arch-box">RAW INGESTION</div>
+                        <span>Dark Current / Flat-Field</span>
+                    </div>
+                    <div class="arch-arrow">➔</div>
+                    <div class="arch-node">
+                        <div class="arch-box">VARIANCE STABILIZATION</div>
+                        <span>Anscombe Transform</span>
+                    </div>
+                    <div class="arch-arrow">➔</div>
+                    <div class="arch-node">
+                        <div class="arch-box highlight-box">AI DENOISING</div>
+                        <span>Restormer / NAFNet</span>
+                    </div>
+                    <div class="arch-arrow">➔</div>
+                    <div class="arch-node">
+                        <div class="arch-box">UI RENDER</div>
+                        <span>Scientific Output</span>
+                    </div>
+                </div>
+
+                <h2>Interactive Processing Stages</h2>
+                <div class="accordion-container">
+                    <div class="accordion-item" data-category="calibration">
+                        <button class="accordion-header"><span class="stage-num">01</span> Ingestion & Calibration<span class="category-tag calibration">CALIBRATION</span></button>
+                        <div class="accordion-content"><div class="content-inner"><h4>Sensor Noise Pre-processing</h4><p>Subtraction of dark current frames, flat-field correction, and non-uniformity response (NUC) adjustments to remove OHRC sensor patterns.</p></div></div>
+                    </div>
+                    <div class="accordion-item" data-category="calibration">
+                        <button class="accordion-header"><span class="stage-num">02</span> Radiometric Normalization<span class="category-tag calibration">CALIBRATION</span></button>
+                        <div class="accordion-content"><div class="content-inner"><h4>Signal Calibration</h4><p>Converts raw DN (Digital Numbers) into absolute radiance values (W⋅m<sup>-2</sup>⋅sr<sup>-1</sup>⋅μm<sup>-1</sup>) using solar exo-atmospheric irradiance models.</p></div></div>
+                    </div>
+                    <div class="accordion-item" data-category="enhancement">
+                        <button class="accordion-header"><span class="stage-num">03</span> Low-Light Feature Recovery<span class="category-tag enhancement">ENHANCEMENT</span></button>
+                        <div class="accordion-content"><div class="content-inner"><h4>SNR Improvement</h4><p>Physics-Informed Retinex Decomposition or Zero-DCE to separate low-frequency illumination fields from high-frequency surface reflectance.</p></div></div>
+                    </div>
+                    <div class="accordion-item" data-category="denoising">
+                        <button class="accordion-header"><span class="stage-num">04</span> Feature-Preserving Denoising<span class="category-tag denoising">DENOISING</span></button>
+                        <div class="accordion-content"><div class="content-inner"><h4>Artifact Mitigation</h4><p>Multi-scale Wavelet Transform combined with Non-Local Means (NLM) or Sparse 3D Transform (BM3D) tuned for Poisson-Gaussian noise distribution.</p></div></div>
+                    </div>
+                    <div class="accordion-item" data-category="validation">
+                        <button class="accordion-header"><span class="stage-num">05</span> Photometric Verification<span class="category-tag validation">VALIDATION</span></button>
+                        <div class="accordion-content"><div class="content-inner"><h4>Topographic Consistency</h4><p>Cross-referencing output against established topography to ensure physical reality is preserved and no structural artifacts are introduced.</p></div></div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="bottlenecks" class="panel bottlenecks">
+            <div class="terminal-header">
+                <span>MODULE // BOTTLENECKS</span>
+                <span>SYSTEM CONSTRAINTS</span>
+            </div>
+            <div class="panel-content">
+                <h2>Technical Bottlenecks & Mitigations</h2>
+                <div class="tabs-container">
+                    <div class="tabs-sidebar">
+                        <button class="tab-btn active" data-target="tab-snr">Ultra-Low SNR</button>
+                        <button class="tab-btn" data-target="tab-hallucination">Hallucination Risk</button>
+                        <button class="tab-btn" data-target="tab-dynamic">Dynamic Range</button>
+                    </div>
+                    <div class="tab-content-area">
+                        <div class="tab-pane active" id="tab-snr">
+                            <h3>Ultra-Low Signal-to-Noise Ratio</h3>
+                            <div class="challenge-box"><span class="label error">CHALLENGE</span><p>PSRs are lit only by weak, secondary sunlight reflected off nearby crater rims. OHRC images suffer from extreme Poisson shot noise and Gaussian sensor read noise.</p></div>
+                            <div class="equation-box">I<sub>obs</sub> = P(I<sub>true</sub>) + N(0, σ<sub>read</sub><sup>2</sup>)</div>
+                            <div class="solution-box"><span class="label success">MITIGATION</span><p>Apply variance-stabilizing transformations (such as the Anscombe Transform) to convert signal-dependent Poisson noise into additive Gaussian noise before applying deep-learning denoising networks (e.g., NAFNet or Restormer).</p></div>
+                        </div>
+                        <div class="tab-pane" id="tab-hallucination">
+                            <h3>False-Detail / Hallucination Risk</h3>
+                            <div class="challenge-box"><span class="label error">CHALLENGE</span><p>Standard generative models (like GANs or unfiltered Diffusion models) often invent non-existent rocks, craters, or surface textures when hallucinating fine details.</p></div>
+                            <div class="equation-box">L<sub>total</sub> = λ<sub>1</sub>L<sub>L1</sub> + λ<sub>2</sub>(1-SSIM) + λ<sub>3</sub>L<sub>Grad</sub></div>
+                            <div class="solution-box"><span class="label success">MITIGATION</span><p>Train networks using a strict Physics-Informed Loss Function that penalizes spatial distortion and preserves structural fidelity. Ensure edge gradients (boulder rims, ejecta blankets) match physical solar reflection bounds.</p></div>
+                        </div>
+                        <div class="tab-pane" id="tab-dynamic">
+                            <h3>Dynamic Range & Contrast</h3>
+                            <div class="challenge-box"><span class="label error">CHALLENGE</span><p>Extremely narrow dynamic range causes histogram compression near zero values.</p></div>
+                            <div class="equation-box">I = R ⊙ L</div>
+                            <div class="solution-box"><span class="label success">MITIGATION</span><p>Implement adaptive Retinex theory. Contrast Limited Adaptive Histogram Equalization (CLAHE) is applied exclusively to the illumination map L, preserving true surface reflectance R.</p></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <section id="validation" class="panel validation">
+            <div class="terminal-header">
+                <span>MODULE // VALIDATION</span>
+                <span>DATA INTEGRITY</span>
+            </div>
+            <div class="panel-content">
+                <h2>Scientific Validation Protocols</h2>
+                <div class="validation-grid">
+                    <div class="val-card"><h4>LROC Reference Imagery</h4><p>Cross-verification against NASA's Lunar Reconnaissance Orbiter Camera datasets to ensure feature alignment.</p></div>
+                    <div class="val-card"><h4>LOLA Topography</h4><p>Utilizing NASA's Lunar Orbiter Laser Altimeter for baseline topography and polar illumination reference.</p></div>
+                    <div class="val-card"><h4>Co-registration</h4><p>Strict spatial alignment algorithms ensuring OHRC processed outputs geometrically match reference DEMs.</p></div>
+                    <div class="val-card"><h4>Shadow Geometry</h4><p>Verifying that predicted shadows cast by crater rims match precise illumination angles.</p></div>
+                    <div class="val-card"><h4>Edge/Slope Consistency</h4><p>Ensuring gradients and physical slopes are not exaggerated by contrast enhancement.</p></div>
+                    <div class="val-card"><h4>Residual-Noise Checks</h4><p>Statistical analysis to ensure Poisson-Gaussian noise removal hasn't destroyed low-frequency data.</p></div>
+                </div>
+            </div>
+        </section>
+
+        <section id="stack" class="panel stack">
+            <div class="terminal-header">
+                <span>MODULE // FRAMEWORKS</span>
+                <span>TECH STACK</span>
+            </div>
+            <div class="panel-content">
+                <h2>System Architecture Stack</h2>
+                <div class="tag-cloud">
+                    <span class="tech-tag" data-type="gis">GDAL</span><span class="tech-tag" data-type="gis">ISIS3</span><span class="tech-tag" data-type="gis">SPICE / spiceypy</span>
+                    <span class="tech-tag" data-type="dl">PyTorch</span><span class="tech-tag" data-type="utils">OpenCV</span><span class="tech-tag" data-type="utils">NumPy / SciPy</span>
+                    <span class="tech-tag" data-type="utils">scikit-image</span><span class="tech-tag" data-type="utils">Astropy</span><span class="tech-tag" data-type="web">Three.js</span><span class="tech-tag" data-type="web">Globe.gl</span>
+                </div>
+            </div>
+        </section>
+
+        <section id="demo" class="panel demo">
+            <div class="terminal-header">
+                <span>MODULE // DEMO</span>
+                <span>INTERACTIVE UPLOAD & METRICS</span>
+            </div>
+            <div class="panel-content">
+                <h2>Advanced Pipeline Simulator</h2>
+                
+                <div class="demo-gallery">
+                    <h4>Demo Gallery (Offline Fallback)</h4>
+                    <p class="small-text">Select a pre-loaded dataset to instantly run the simulation.</p>
+                    <div class="gallery-grid">
+                        <div class="gallery-item" data-src="https://images.unsplash.com/photo-1518331483807-f6ddfaeed5f3?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60">
+                            <img src="https://images.unsplash.com/photo-1518331483807-f6ddfaeed5f3?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" alt="Crater 1">
+                            <span>Crater Alpha</span>
+                        </div>
+                        <div class="gallery-item" data-src="https://images.unsplash.com/photo-1614730321146-b6fa6a46bcb4?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60">
+                            <img src="https://images.unsplash.com/photo-1614730321146-b6fa6a46bcb4?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" alt="Crater 2">
+                            <span>PSR Bravo</span>
+                        </div>
+                        <div class="gallery-item" data-src="https://images.unsplash.com/photo-1532692984534-712850b55227?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60">
+                            <img src="https://images.unsplash.com/photo-1532692984534-712850b55227?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60" alt="Crater 3">
+                            <span>Sector Charlie</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="demo-container">
+                    <div id="drop-zone" class="drop-zone">
+                        <div id="radar" class="radar-sweep hidden"></div>
+                        <div class="upload-icon">⬇</div>
+                        <p>Drag & Drop OHRC .img file(s) here</p>
+                        <p class="small-text">Batch processing supported</p>
+                        <input type="file" id="file-input" hidden multiple>
+                    </div>
+                    
+                    <div id="processing-ui" class="processing-ui hidden">
+                        <div class="processing-header">
+                            <span>PROCESSING SEQUENCE INITIATED</span>
+                            <span id="progress-percent">0%</span>
+                        </div>
+                        <div class="progress-bar-container">
+                            <div id="progress-bar" class="progress-bar"></div>
+                        </div>
+                        <ul class="processing-stages">
+                            <li id="step-1" class="step pending">1. Ingestion & Calibration</li>
+                            <li id="step-2" class="step pending">2. Radiometric Normalization</li>
+                            <li id="step-3" class="step pending">3. SNR Improvement</li>
+                            <li id="step-4" class="step pending">4. Feature-Preserving Denoising</li>
+                            <li id="step-5" class="step pending">5. Validation & Mapping</li>
+                        </ul>
+                        <div class="cmd-terminal mt-2">
+                            <div class="cmd-header">SysLog // Process Runtime</div>
+                            <div id="cmd-output" class="cmd-output"></div>
+                        </div>
+                    </div>
+                    
+                    <div id="result-ui" class="result-ui hidden">
+                        <div class="terminal-header">
+                            <span>OUTPUT // TELEMETRY & ANALYSIS</span>
+                            <span style="color: var(--accent-green)">SUCCESS</span>
+                        </div>
+                        
+                        <div class="dashboard-layout">
+                            <div class="visual-pane">
+                                <div class="action-bar">
+                                    <button class="view-btn" id="btn-clear" data-view="clear">Clear All Tools</button>
+                                    <button class="view-btn toggle-btn" id="btn-edge" data-view="edge">Edge Map</button>
+                                    <button class="view-btn toggle-btn" id="btn-thermal" data-view="thermal">Thermal LUT</button>
+                                    <button class="view-btn toggle-btn" id="btn-lens" data-view="lens">Magnifying Lens</button>
+                                    <button class="view-btn toggle-btn highlight-btn" id="btn-3d" data-view="3d">3D Crater Flythrough</button>
+                                </div>
+                                
+                                <div class="slider-container view-mode-normal" id="slider-container">
+                                    <!-- Mission Targeting Reticle Overlay -->
+                                    <svg class="mission-reticle" viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+                                        <circle cx="50" cy="50" r="45" fill="none" stroke="rgba(0, 243, 255, 0.5)" stroke-width="0.5" stroke-dasharray="4 2"/>
+                                        <circle cx="50" cy="50" r="30" fill="none" stroke="rgba(0, 243, 255, 0.3)" stroke-width="0.5"/>
+                                        <line x1="50" y1="0" x2="50" y2="15" stroke="var(--accent-cyan)" stroke-width="1"/>
+                                        <line x1="50" y1="85" x2="50" y2="100" stroke="var(--accent-cyan)" stroke-width="1"/>
+                                        <line x1="0" y1="50" x2="15" y2="50" stroke="var(--accent-cyan)" stroke-width="1"/>
+                                        <line x1="85" y1="50" x2="100" y2="50" stroke="var(--accent-cyan)" stroke-width="1"/>
+                                        <circle cx="50" cy="50" r="2" fill="var(--accent-red)"/>
+                                    </svg>
+
+                                    <!-- Zoom Wrapper for 2D Tools -->
+                                    <div id="zoom-wrapper" class="zoom-wrapper" style="width:100%; height:100%; position:absolute; top:0; left:0; transform-origin: 0 0; cursor: grab;">
+                                        <img id="image-before" class="slider-img" src="" alt="Raw Input">
+                                        <img id="image-after" class="slider-img after-img" src="" alt="Enhanced Output">
+                                        <div class="slider-handle" id="slider-handle"></div>
+                                    </div>
+                                    <div id="magnifier" class="magnifier hidden"></div>
+                                    
+                                    <!-- 3D Canvas (Hidden by default) -->
+                                    <div id="canvas-3d-container" class="canvas-3d-container hidden"></div>
+                                </div>
+                                <div class="slider-labels">
+                                    <span>RAW INPUT</span>
+                                    <span>ENHANCED PIPELINE</span>
+                                </div>
+                            </div>
+
+                            <div class="telemetry-pane">
+                                <h3>Live Telemetry Feed</h3>
+                                
+                                <div class="chart-container">
+                                    <span class="metric-label">Signal-to-Noise Ratio (SNR) Progression</span>
+                                    <canvas id="snrChart"></canvas>
+                                </div>
+                                
+                                <div class="chart-container histogram-container">
+                                    <span class="metric-label">Recovered Dynamic Range (Histogram)</span>
+                                    <canvas id="histogramChart"></canvas>
+                                </div>
+                                
+                                <div class="globe-wrapper">
+                                    <span class="metric-label">Lunar Coordinates (PSR Context)</span>
+                                    <div id="globe-container" class="globe-container" style="position: relative;">
+                                        <div id="coord-overlay" class="coord-overlay">TARGET: SHACKLETON CRATER <br> LAT: 89.9° S | LON: 0.0° E</div>
+                                    </div>
+                                </div>
+
+                                <div class="export-box">
+                                    <span class="metric-label">Scientific Export Formats</span>
+                                    <div class="export-btns">
+                                        <button class="exp-btn">.PNG</button>
+                                        <button class="exp-btn special">.TIFF (16-bit)</button>
+                                        <button class="exp-btn special">.FITS</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <button id="reset-demo-btn" class="cta-btn mt-2">PROCESS NEW DATASET</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+    
+    <footer class="terminal-footer">
+        <span>© 2026 // OHRC PSR PROCESSING FRAMEWORK</span>
+        <span>SYS_STATUS: OPTIMAL</span>
+    </footer>
+
+    <script src="script.js"></script>
+</body>
+</html>
